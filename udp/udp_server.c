@@ -17,7 +17,6 @@
 #include <arpa/inet.h>
 
 #define BUFSIZE 1024
-
 /*
  * error - wrapper for perror
  */
@@ -37,7 +36,6 @@ int main(int argc, char **argv) {
   char *hostaddrp; /* dotted decimal host addr string */
   int optval; /* flag value for setsockopt */
   int n; /* message byte size */
-
   /* 
    * check command line arguments 
    */
@@ -54,6 +52,7 @@ int main(int argc, char **argv) {
   if (sockfd < 0) 
     error("ERROR opening socket");
 
+    printf("parent socket created...");
   /* setsockopt: Handy debugging trick that lets 
    * us rerun the server immediately after we kill it; 
    * otherwise we have to wait about 20 secs. 
@@ -87,12 +86,16 @@ int main(int argc, char **argv) {
     /*
      * recvfrom: receive a UDP datagram from a client
      */
+      
+    printf("\n waiting for command... \n");
     bzero(buf, BUFSIZE);
     n = recvfrom(sockfd, buf, BUFSIZE, 0,
 		 (struct sockaddr *) &clientaddr, &clientlen);
     if (n < 0)
       error("ERROR in recvfrom");
-
+    
+      
+    printf(" \n command received... \n");
     /* 
      * gethostbyaddr: determine who sent the datagram
      */
@@ -110,9 +113,75 @@ int main(int argc, char **argv) {
     /* 
      * sendto: echo the input back to the client 
      */
+    
+      
+    
+      
     n = sendto(sockfd, buf, strlen(buf), 0, 
 	       (struct sockaddr *) &clientaddr, clientlen);
     if (n < 0) 
       error("ERROR in sendto");
+      
+    
+    int optint = atoi(buf);
+    printf("\n switching into option: %i ... \n", optint);  
+    switch(optint){
+        
+        case 1: //message
+            printf("message inbound! booyah \n");
+            
+            n = recvfrom(sockfd, buf, BUFSIZE, 0,
+                 (struct sockaddr *) &clientaddr, &clientlen);
+            if (n < 0)
+              error("ERROR in recvfrom");
+            
+            printf("\n Message from dear client: %s \n", buf);
+            
+            n = sendto(sockfd, buf, strlen(buf), 0, 
+               (struct sockaddr *) &clientaddr, clientlen);
+            if (n < 0) 
+              error("ERROR in sendto");
+            
+            break;
+            
+            
+        case 2: //GET
+            printf("GET command received..." \n);
+            n = recvfrom(sockfd, buf, BUFSIZE, 0,
+                 (struct sockaddr *) &clientaddr, &clientlen);
+            if (n < 0)
+              error("ERROR in recvfrom");
+            
+            printf("\n looking for file %s \n", buf);
+            break;
+            
+            
+        case 3: //PUT
+            printf("PUT command received...");
+            break;
+            
+            
+        case 4: //DEL
+            printf("DEL command received...");
+            break;
+            
+            
+        case 5: //ls
+            printf("ls command received...");
+            break;
+            
+            
+        case 6: //EXIT
+            printf("EXIT command received... shutting down \n \n");
+            return 0;
+            
+            
+        default:
+            printf("invalid command received... somehow..");
+            break;
+    
+    
+    }  
+      
   }
 }

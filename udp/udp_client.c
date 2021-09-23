@@ -60,9 +60,25 @@ int main(int argc, char **argv) {
 
     /* get a message from the user */
     while(1){
-        printf("=====MENU====== \n Send Message:1 \n get:2 \n put:3 \n delete:4 \n exit:5 \n \n \n");
+        printf("\n =====MENU====== \n Send Message:1 \n get:2 \n put:3 \n delete:4 \n ls:5 \n exit:6 \n \n \n");
         printf("Please enter #: ");
         fgets(buf, BUFSIZE, stdin);
+        
+        
+        serverlen = sizeof(serveraddr);
+        n = sendto(sockfd, buf, strlen(buf), 0, (struct sockaddr *)&serveraddr, serverlen); 
+                
+        if (n < 0) 
+            error("ERROR in sendto");
+
+        /* print the server's reply */
+        n = recvfrom(sockfd, buf, strlen(buf), 0, (struct sockaddr *) &serveraddr, &serverlen);
+        
+        if (n < 0) 
+            error("ERROR in recvfrom");
+        
+        printf("string sent: %s", buf);
+        
         int optint = atoi(buf);
         
         printf("optin choice: %i \n \n", optint);
@@ -75,8 +91,8 @@ int main(int argc, char **argv) {
                 fgets(buf, BUFSIZE, stdin);
 
                 /* send the message to the server */
-                serverlen = sizeof(serveraddr);
-                n = sendto(sockfd, buf, strlen(buf), 0, (struct sockaddr *)&serveraddr, serverlen); //fix ns, wrong type
+                n = sendto(sockfd, buf, strlen(buf), 0, (struct sockaddr *)&serveraddr, serverlen); 
+                
                 if (n < 0) 
                   error("ERROR in sendto");
 
@@ -88,9 +104,46 @@ int main(int argc, char **argv) {
                 
                 break;
                 
-            case 5:
+            case 2: //GET
                 
+                printf("GET command sent... enter file name requested: \n");
+                fgets(buf, BUFSIZE, stdin);
+                
+                n = sendto(sockfd, buf, strlen(buf), 0, (struct sockaddr *)&serveraddr, serverlen); 
+                if (n < 0) 
+                  error("ERROR in sendto");
+                
+                
+                break;
+                
+                
+            case 3: //PUT
+                printf("PUT command sent... \n");
+                break;
+                
+                
+                
+                
+            case 4:  //DEL
+                printf("DEL command sent... \n");
+                break;    
+                
+                
+                
+                
+            case 5:   //ls
+                printf("ls command sent... \n");
+                break;
+                
+            case 6:  //EXIT
+                printf("EXIT command sent... \n ");
+                printf("Server shut down, closing client. \n \n");
                 return 0;
+            
+                
+            default:
+                
+                printf("\n options are 1-6. \n");
                 
         }
     }
