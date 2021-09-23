@@ -146,7 +146,7 @@ int main(int argc, char **argv) {
             
             
         case 2: //GET
-            printf("GET command received..." \n);
+            printf("GET command received... \n");
             n = recvfrom(sockfd, buf, BUFSIZE, 0,
                  (struct sockaddr *) &clientaddr, &clientlen);
             if (n < 0)
