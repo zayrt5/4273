@@ -62,6 +62,7 @@ int main(int argc, char **argv) {
     while(1){
         printf("\n =====MENU====== \n Send Message:1 \n get:2 \n put:3 \n delete:4 \n ls:5 \n exit:6 \n \n \n");
         printf("Please enter #: ");
+        bzero(buf, BUFSIZE);
         fgets(buf, BUFSIZE, stdin);
         
         
@@ -76,12 +77,10 @@ int main(int argc, char **argv) {
         
         if (n < 0) 
             error("ERROR in recvfrom");
-        
-        printf("string sent: %s", buf);
-        
+                
         int optint = atoi(buf);
         
-        printf("optin choice: %i \n \n", optint);
+        //printf("optin choice: %i \n \n", optint);
         
         switch(optint){
             
@@ -106,19 +105,28 @@ int main(int argc, char **argv) {
                 
             case 2: //GET
                 
-                printf("GET command sent... enter file name requested: \n");
+                printf("\n GET command sent... enter file name requested: ");
+                bzero(buf, BUFSIZE);
                 fgets(buf, BUFSIZE, stdin);
                 
                 n = sendto(sockfd, buf, strlen(buf), 0, (struct sockaddr *)&serveraddr, serverlen); 
                 if (n < 0) 
                   error("ERROR in sendto");
                 
+                 
+                
                 
                 break;
                 
                 
             case 3: //PUT
-                printf("PUT command sent... \n");
+                printf("\n PUT command sent... Enter file to be sent to server: ");
+                bzero(buf, BUFSIZE);
+                fgets(buf, BUFSIZE, stdin);
+                                
+                
+                
+                
                 break;
                 
                 

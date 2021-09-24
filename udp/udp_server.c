@@ -25,6 +25,32 @@ void error(char *msg) {
   exit(1);
 }
 
+
+
+int sendFile(FILE* fp, char* buf, int s)
+{
+    int i, len;
+    if (fp == NULL) {
+        strcpy(buf, "File Not Found!");
+        len = strlen("File Not Found!");
+        buf[len] = EOF;
+        return 1;
+    }
+  
+    char ch;
+    for (i = 0; i < s; i++) {
+        ch = fgetc(fp);
+        buf[i] = ch;
+        if (ch == EOF)
+            return 1;
+    }
+    return 0;
+}
+
+
+
+
+
 int main(int argc, char **argv) {
   int sockfd; /* socket */
   int portno; /* port to listen on */
@@ -36,6 +62,7 @@ int main(int argc, char **argv) {
   char *hostaddrp; /* dotted decimal host addr string */
   int optval; /* flag value for setsockopt */
   int n; /* message byte size */
+  FILE* fp;
   /* 
    * check command line arguments 
    */
@@ -129,7 +156,7 @@ int main(int argc, char **argv) {
         
         case 1: //message
             printf("message inbound! booyah \n");
-            
+            bzero(buf, BUFSIZE);
             n = recvfrom(sockfd, buf, BUFSIZE, 0,
                  (struct sockaddr *) &clientaddr, &clientlen);
             if (n < 0)
@@ -147,12 +174,26 @@ int main(int argc, char **argv) {
             
         case 2: //GET
             printf("GET command received... \n");
+            bzero(buf, BUFSIZE);
             n = recvfrom(sockfd, buf, BUFSIZE, 0,
                  (struct sockaddr *) &clientaddr, &clientlen);
             if (n < 0)
               error("ERROR in recvfrom");
             
-            printf("\n looking for file %s \n", buf);
+            printf("\n looking for file /%s \n", buf);
+            
+            fp = fopen(buf, "r");
+            
+            if (fp == NULL)
+                printf("\nFile open failed!\n");
+            else
+                printf("\nFile Successfully opened!\n");
+            
+            
+            
+            
+            //fopen buf; if sendfile, send to client
+            
             break;
             
             
