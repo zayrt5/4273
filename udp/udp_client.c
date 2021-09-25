@@ -23,6 +23,25 @@ void error(char *msg) {
     exit(0);
 }
 
+
+
+int recvFile(char* buf, int s)
+{
+    int i;
+    char ch;
+    for (i = 0; i < s; i++) {
+        ch = buf[i];
+        if (ch == EOF)
+            return 1;
+        else
+            printf("%c", ch);
+    }
+    return 0;
+}
+
+
+
+
 int main(int argc, char **argv) {
     int sockfd, portno, n;
     int serverlen;
@@ -109,11 +128,26 @@ int main(int argc, char **argv) {
                 bzero(buf, BUFSIZE);
                 fgets(buf, BUFSIZE, stdin);
                 
+                buf[strlen (buf) - 1] = '\0';
+                
                 n = sendto(sockfd, buf, strlen(buf), 0, (struct sockaddr *)&serveraddr, serverlen); 
                 if (n < 0) 
                   error("ERROR in sendto");
                 
-                 
+                while (1) {
+            // receive
+                    bzero(buf,BUFSIZE);
+                    n = recvfrom(sockfd, buf, BUFSIZE,
+                                      0, (struct sockaddr*)&serveraddr,
+                                      &serverlen);
+  
+            // process
+                    if (recvFile(buf, BUFSIZE)) {
+                        break;
+                    }
+                    
+                }
+                bzero(buf, BUFSIZE);
                 
                 
                 break;
@@ -123,10 +157,13 @@ int main(int argc, char **argv) {
                 printf("\n PUT command sent... Enter file to be sent to server: ");
                 bzero(buf, BUFSIZE);
                 fgets(buf, BUFSIZE, stdin);
+                
+                
+                
                                 
                 
                 
-                
+                bzero(buf, BUFSIZE);
                 break;
                 
                 

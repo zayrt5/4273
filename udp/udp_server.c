@@ -180,7 +180,7 @@ int main(int argc, char **argv) {
             if (n < 0)
               error("ERROR in recvfrom");
             
-            printf("\n looking for file /%s \n", buf);
+            printf("\n looking for file %s \n", buf);
             
             fp = fopen(buf, "r");
             
@@ -188,6 +188,27 @@ int main(int argc, char **argv) {
                 printf("\nFile open failed!\n");
             else
                 printf("\nFile Successfully opened!\n");
+            
+            
+            
+            while(1){
+            
+            if(sendFile(fp,buf, BUFSIZE)){
+                printf("\n File loaded, sending... \n");
+                sendto(sockfd, buf, BUFSIZE, 0, (struct sockaddr *)&clientaddr, clientlen);
+                
+                break;
+            
+                }
+                
+                sendto(sockfd, buf, BUFSIZE, 0, (struct sockaddr*)&clientaddr, clientlen);
+                bzero(buf,BUFSIZE);
+                
+            
+            }
+            
+            if (fp != NULL)
+                fclose(fp);
             
             
             
