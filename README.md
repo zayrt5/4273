@@ -1,6 +1,9 @@
 'make all' will compile the c files and place their objects 'udpclient' and 'udpserver' in their respective dir
+
 'make server.o'  compiles and places server object
 'make client.o' compiles and places client object
+
+'make clean' removes all created .o files
 
 running programs is as declared before
 ./udpclient <hostname> <port no>
