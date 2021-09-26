@@ -6,8 +6,11 @@
 'make clean' removes all created .o files
 
 running programs is as declared before
+
+```
 ./udpclient <hostname> <port no>
 ./udpserver <port no>
+```
 
 Program runs in a loop taking options 1-6
 1: message
