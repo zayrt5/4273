@@ -12,12 +12,19 @@ running programs is as declared before
 ./udpserver <port no>
 ```
 
+
 Program runs in a loop taking options 1-6
+
 1: message
+
 2: GET
+
 3: PUT
+
 4: DELETE
+
 5: ls
+
 6: EXIT
 
 
