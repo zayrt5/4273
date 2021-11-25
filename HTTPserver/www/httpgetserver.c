@@ -37,7 +37,7 @@ void error(FILE *stream, char *cause, char *errno,
 int main(int argc, char **argv) 
 {
     int listenfd, *connfdp, port, clientlen=sizeof(struct sockaddr_in);
-    
+    char clientip[BUFSIZ];
 
     struct sockaddr_in clientaddr;
     pthread_t tid; 
@@ -50,6 +50,8 @@ int main(int argc, char **argv)
 
     listenfd = open_listenfd(port);
     while (1) {
+    inet_ntop( AF_INET, &clientaddr.sin_addr, clientip, BUFSIZ);
+    printf("New client address: %s\n", clientip);
 	connfdp = malloc(sizeof(int));
 	*connfdp = accept(listenfd, (struct sockaddr*)&clientaddr, &clientlen);
 	pthread_create(&tid, NULL, thread, connfdp);
@@ -109,6 +111,7 @@ void echo(int connfd)
 
     //receive the request
     fgets(buf, BUFSIZ, stream);
+    printf("\nRequest Received.\n");
     //printf("server received the following request:\n%s\n",buf);
     //parse for the method uri and version
     printf("%s", buf);
@@ -119,6 +122,7 @@ void echo(int connfd)
     while(strcmp(buf, "\r\n")) {
       fgets(buf, BUFSIZ, stream);
       printf("%s", buf);
+      //break;
     }
     //put www into the file amd then append the uri unless request is ./
     //then return index.html
